@@ -10,7 +10,9 @@ class App extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-			
+			mainViewState : {
+				viewPage : '#',
+			},
 		};
 
 	}
@@ -19,7 +21,8 @@ class App extends React.Component{
 	// if a button in navbar is cliked: generate pages
 	handleClick = (btnName) => {
 		if (btnName === 'home') {
-			// return to the home page
+			// go to the home page
+			this.setState({mainViewState : {viewPage : 'home'}})
 		} else if (btnName === 'resources') {
 			// build resource page
 		} else if (btnName = 'about') {
@@ -34,12 +37,13 @@ class App extends React.Component{
 	
 	render() {
 		let nav_state = this.state.navbarState;
+		let main_view_state = this.state.mainViewState;
 
 
 		return (
 			<div className="App">
-				<Navbar state = {nav_state} handleClick = {this.handleClick}/>
-				<MainView />
+				<Navbar  handleClick = {this.handleClick}/>
+				<MainView state = {main_view_state}/>
 			</div>
 		);
 	}

@@ -12,7 +12,7 @@ class Navbar extends React.Component {
     }
 
     // handling clicking events
-    handleHomeClick = () => {
+    handleClick = () => {
         // this.props.state.homeClicked = true;
         this.props.handleClick('home');
     };
@@ -28,11 +28,11 @@ class Navbar extends React.Component {
                     <span className="fs-4">Colby Digital Studies</span>
                 </a>
                 <ul className="nav nav-pills">
-                    <li className="nav-item"><a href="#" className="nav-link active" aria-current="page" onClick = {this.handleHomeClick}>Home</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link">Teaching &amp; Research</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link">Database</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link">Resources</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link">About</a></li>
+                    <li className="nav-item"><a href="#" className="nav-link active" aria-current="page" onClick = {this.handleClick('home')}>Home</a></li>
+                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClick('teachingandresearch')}>Teaching &amp; Research</a></li>
+                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClick('database')}>Database</a></li>
+                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClick('resources')}>Resources</a></li>
+                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClick('about')}>About</a></li>
                     <li className="nav-item"><div id="google_translate_element" /></li>
                 </ul>
                 </header>

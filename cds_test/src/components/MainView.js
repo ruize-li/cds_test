@@ -5,21 +5,21 @@
  */
  import React from "react";
  import Homepage from "./pages/Homepage";
+ import Resources from "./pages/Resources";
 
 class MainView extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            view : 'home'
-        };
+        
     }
 
 
     render() {
         // figure out what to display
-        const page = this.state.view;
-        let content = page === 'page' ? <Homepage/> : "";
-        console.log(content);
+        const page = this.props.state.viewPage;
+        console.log(page);
+        // let content = page === 'page' ? <Homepage/> : "";
+        // console.log(content);
         return(
             <div className="container">
                 <Homepage />
