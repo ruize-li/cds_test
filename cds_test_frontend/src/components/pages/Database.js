@@ -4,132 +4,94 @@
  * provides search and fitler functionalities
  * Author: Ruize Li
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
+import SelectSearch from 'react-select-search';
+import './style.css'
+import axios from 'axios';
 
 
 
-function DatabaseSearchbar(props) {
-
-    // on submit, parse the input string by space
-    const input = props.input;
-    const setInput = props.setInput;
-    const output = props.output;
-    const setOutput = props.setOutput;
-    // const setRefresh = props.setRefresh;
-    const doQuery = props.doQuery;
-    const setDoQuery = props.setDoQuery;
-
-    function handleSearchSubmit() {
-        // setInput(e.target.value)
-        
-        
-    }
-    // on Enter
-    function handleKeyPress(e) {
-        if (e.key === 'Enter') {
-            setInput(e.target.value);
-            setDoQuery(true);
-            
-            // alert('doquery is true!')
+class Search extends Component {
+    constructor() {
+        super();
+        this.state = {
+            query : '',
+            result : [],
+            filteredResult : []
         }
     }
 
-    // update input state on changes
-    function handleInputChange(e) {
-        setInput(e.target.value);
-    }
-    return (
-        <div className="container">
-            <form >
-                <div className="input-group mb-3">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text" id="inputGroup-sizing-default">Keywords </span>
-                    </div>
-                    <input type="text" className="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
-                         onKeyPress = {handleKeyPress}/>
-                    <button type="submit" className="btn btn-primary" >暴力点我</button>
-                </div>
-            </form>
-            {doQuery && <DatabaseQuery
-                            query = {input}
-                            setOutput = {setOutput}
-                         />}
-        </div>
+    getData = () => {
+        let query = this.state.query;
+        console.log('get data invoked')
+        console.log('in getdata, query is ' + query)
+        fetch('http://localhost:9000/search?keywords=' + query)  
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                  } else {
+                      console.log(response.status);
+                    throw new Error('Something went wrong');
+                  }
+            })
+            .then(data => this.setState({result : JSON.stringify(data)}))
+            .catch(err => console.log(err))
+    };
+    // handle input change
+    handleInputChange = () => (
         
+        this.setState({
+            query: this.search.value
+        }), () => {
+            if (this.state.query) {
+                console.log('get data executed!')
+                this.getData();
+            }
+        }
     );
-}
-
-
-
-/**
- * Send the keywords to backend api
- * Fetch filtered results
- * @param {props}} props 
- * @returns 
- */
-function DatabaseQuery(props) {
-    let query = props.query;
-    let setOutput = props.setOutput;
-
-    let apiQuery = {keywords : query}
-    alert("query is" + query)
+    // handleInputChange = () => {
+    //     this.setState({});
+    // }
     
-    // if user confirmed input
-    // fetch
-    
-    fetch('/api/', {
-        method : 'PUT',
-        body : JSON.stringify(apiQuery)
+    // on load
+    componentDidMount(){
+        console.log('mounted!')
+        this.getData();
+    };
 
+    render() {
+        return (
+            <form>
+                <h3>Input keywords, separated by space, and press <code>Enter</code></h3>
+                <input placeholder="Search for..." ref={input => this.search = input} onChange={this.handleInputChange}/>
+                <p>This is the database query page</p>
+                <p>{this.state.query}</p>
+                <p>Results: {this.state.result}</p>
+            </form>
+        );
     }
-    ).then( res => {
-        if (res.ok) {
-            
-            return res.json();
-        }
-    }).then(jsonResponse => setOutput(jsonResponse))
-    
-
-
-
-    // console.log(query);
-    return (
-        <div>This is the place for showing query results!
-        {/* <p>{JSON.stringify({output})}</p> */}
-        <h3>{query}</h3>
-        
-        </div>
-        
-    ) 
 }
-
 
 
 function Database() {
-    // input values from search bar
-    // output : json fetched from API call
-    const [input, setInput] = useState('');
-    const [output, setOutput] = useState('');
-    const [doQuery, setDoQuery] = useState(false);
-
-    // console.log(searchRes)
+    const options = [
+        {name: 'SHMH', value: 'sv', imgpath: 'path1'},
+        {name: 'SDMH', value: 'en', imgpath: 'path2'},
+        {
+            type: 'group',
+            name: 'Group name',
+            items: [
+                {name: 'RMRB', value: 'es'},
+            ]
+        },
+    ];
     return (
-        <div className="align-items-center">
-            <h2>Welcome to the databse.</h2>
-            <p>Instruction: Type in keywords in the search bar, seperated by space, and press <code>Enter</code> to view the results.</p>
-            <DatabaseSearchbar 
-                input = {input}
-                setInput = {setInput}
-                doQuery = {doQuery}
-                setDoQuery = {setDoQuery}
-                setOutput = {setOutput}
-            />
-            Input is : {input}
-            
+        <div className="container">
+            <Search />
+            {/* <SelectSearch options = {options} value = "" name = "keywords" placeholder = "Enter keywords.."/> */}
         </div>
     );
 }
-
 
 
 export default Database;
