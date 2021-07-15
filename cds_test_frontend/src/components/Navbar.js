@@ -47,11 +47,11 @@ class Navbar extends React.Component {
                     <span className="fs-4">Colby Digital Studies</span>
                 </a>
                 <ul className="nav nav-pills">
-                    <li className="nav-item"><a href="#" className="nav-link active" aria-current="page" onClick = {this.handleClickHome}>Home</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClickTeachingResearch}>Teaching &amp; Research</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClickDatabase}>Database</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClickResources}>Resources</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link" onClick = {this.handleClickAbout}>About</a></li>
+                    <li className="nav-item"><a  className="nav-link active" aria-current="page" onClick = {this.handleClickHome}>Home</a></li>
+                    <li className="nav-item"><a  className="nav-link" onClick = {this.handleClickTeachingResearch}>Teaching &amp; Research</a></li>
+                    <li className="nav-item"><a  className="nav-link" onClick = {this.handleClickDatabase}>Database</a></li>
+                    <li className="nav-item"><a  className="nav-link" onClick = {this.handleClickResources}>Resources</a></li>
+                    <li className="nav-item"><a  className="nav-link" onClick = {this.handleClickAbout}>About</a></li>
                     <li className="nav-item"><div id="google_translate_element" /></li>
                 </ul>
                 </header>

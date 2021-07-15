@@ -12,14 +12,29 @@ export const DatabaseQuery = (props) => {
     let query = props.input;
     let output = props.output;
     let setOutput = props.setOutput;
-    useEffect(() => {
-        fetch('/api/').then( res => {
+    let setRefresh = props.setRefresh;
+    let refresh = props.refresh;
+    // send query to the backend server
+    // the server returns a filtered results
+    let apiQuery = {keywords : query}
+    
+    // if user confirmed input
+    // fetch
+    if (refresh) {
+        fetch('/api/', {
+            method : 'PUT',
+            body : JSON.stringify(apiQuery)
+        }
+        ).then( res => {
             if (res.ok) {
                 
                 return res.json();
             }
         }).then(jsonResponse => setOutput(jsonResponse))
-    }, [])
+    }
+
+
+
     // console.log(query);
     return (
         <div>This is the place for showing query results!

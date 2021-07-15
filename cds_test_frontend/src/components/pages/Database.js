@@ -5,11 +5,103 @@
  * Author: Ruize Li
  */
 import React, { useState, useEffect } from "react";
-import { DatabaseQuery } from "./DatabaseQuery";
-import { DatabaseSearchbar } from "./DatabaseSearchbar"
-import { DatabaseDisplayResults } from "./DatabaseDisplayResults";
 
 
+
+function DatabaseSearchbar(props) {
+
+    // on submit, parse the input string by space
+    const input = props.input;
+    const setInput = props.setInput;
+    const output = props.output;
+    const setOutput = props.setOutput;
+    // const setRefresh = props.setRefresh;
+    const doQuery = props.doQuery;
+    const setDoQuery = props.setDoQuery;
+
+    function handleSearchSubmit() {
+        // setInput(e.target.value)
+        
+        
+    }
+    // on Enter
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            setInput(e.target.value);
+            setDoQuery(true);
+            
+            // alert('doquery is true!')
+        }
+    }
+
+    // update input state on changes
+    function handleInputChange(e) {
+        setInput(e.target.value);
+    }
+    return (
+        <div className="container">
+            <form >
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text" id="inputGroup-sizing-default">Keywords </span>
+                    </div>
+                    <input type="text" className="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                         onKeyPress = {handleKeyPress}/>
+                    <button type="submit" className="btn btn-primary" >暴力点我</button>
+                </div>
+            </form>
+            {doQuery && <DatabaseQuery
+                            query = {input}
+                            setOutput = {setOutput}
+                         />}
+        </div>
+        
+    );
+}
+
+
+
+/**
+ * Send the keywords to backend api
+ * Fetch filtered results
+ * @param {props}} props 
+ * @returns 
+ */
+function DatabaseQuery(props) {
+    let query = props.query;
+    let setOutput = props.setOutput;
+
+    let apiQuery = {keywords : query}
+    alert("query is" + query)
+    
+    // if user confirmed input
+    // fetch
+    
+    fetch('/api/', {
+        method : 'PUT',
+        body : JSON.stringify(apiQuery)
+
+    }
+    ).then( res => {
+        if (res.ok) {
+            
+            return res.json();
+        }
+    }).then(jsonResponse => setOutput(jsonResponse))
+    
+
+
+
+    // console.log(query);
+    return (
+        <div>This is the place for showing query results!
+        {/* <p>{JSON.stringify({output})}</p> */}
+        <h3>{query}</h3>
+        
+        </div>
+        
+    ) 
+}
 
 
 
@@ -18,9 +110,7 @@ function Database() {
     // output : json fetched from API call
     const [input, setInput] = useState('');
     const [output, setOutput] = useState('');
-    const [refresh, setRefresh] = useState(false);
-    const [searchRes, setSearchRes] = useState([]);
-    // console.log(output);
+    const [doQuery, setDoQuery] = useState(false);
 
     // console.log(searchRes)
     return (
@@ -30,22 +120,12 @@ function Database() {
             <DatabaseSearchbar 
                 input = {input}
                 setInput = {setInput}
-                setRefresh = {setRefresh}
-            />
-            <DatabaseQuery
-                query = {input}
+                doQuery = {doQuery}
+                setDoQuery = {setDoQuery}
                 setOutput = {setOutput}
-                output = {output}
-             />
-             
-             <DatabaseDisplayResults 
-                jsonInput = {output}
-                query = {input}
-                refresh = {refresh}
-                setRefresh = {setRefresh}
-                searchRes = {searchRes}
-                setSearchRes = {setSearchRes}
-             />
+            />
+            Input is : {input}
+            
         </div>
     );
 }

@@ -32,14 +32,14 @@ export const DatabaseDisplayResults = (props) => {
                 console.log(data[file]["keywords"].indexOf(key));
                 // if the keyword exists and there is no duplicates
                 if (data[file]["keywords"].indexOf(key) > -1 && !searchRes.includes(data[file])) {
-                    let temp = searchRes;
-                    temp.push(data[file]);
-                    setSearchRes(temp);
+                    // let temp = searchRes;
+                    // temp.push(data[file]);
+                    // setSearchRes(temp);
                 }
             }
         }
         // console.log(searchResults);
-        setRefresh(!refresh);
+        setRefresh(false);
     }
     
     // prepare the results
