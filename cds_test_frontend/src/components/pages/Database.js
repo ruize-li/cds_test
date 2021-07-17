@@ -9,23 +9,47 @@ import SelectSearch from 'react-select-search';
 import './style.css'
 import axios from 'axios';
 
+// data_set =
+function DisplaySearchRes(props) {
+    const data = props.data;
+    const lisItems = Object.keys(data).map((val, i) => {
+        <li key = {i}>
+            <span>data[val]["file_name"]</span>
+            <span>data[val]["keyword"]</span>
+            <span>data[val]["image_path"]</span>
+        </li>
+    })
+
+    return (
+        <div className="container">
+        <h2>Here are the searched results:</h2>
+            <ul>
+                {lisItems}
+            </ul>
+        </div>
+    );
+}
 
 
 class Search extends Component {
     constructor() {
         super();
         this.state = {
+            value : 'Enter Keywords...',
             query : '',
-            result : [],
-            filteredResult : []
+            result : {},
+            filteredResult : {}
         }
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.getData = this.getData.bind(this);
     }
 
-    getData = () => {
+    getData(e){
+        e.preventDefault();
         let query = this.state.query;
         console.log('get data invoked')
         console.log('in getdata, query is ' + query)
-        fetch('http://localhost:9000/search?keywords=' + query)  
+        fetch('http://localhost:5000/search?keywords=毛主席')  
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -34,21 +58,12 @@ class Search extends Component {
                     throw new Error('Something went wrong');
                   }
             })
-            .then(data => this.setState({result : JSON.stringify(data)}))
+            .then(data => this.setState({result : data}))
             .catch(err => console.log(err))
+        // console.log('filtered res' + this.state.filteredResult);
     };
     // handle input change
-    handleInputChange = () => (
-        
-        this.setState({
-            query: this.search.value
-        }), () => {
-            if (this.state.query) {
-                console.log('get data executed!')
-                this.getData();
-            }
-        }
-    );
+    handleInputChange(e) { this.setState({ query : e.target.value})}
     // handleInputChange = () => {
     //     this.setState({});
     // }
@@ -62,11 +77,12 @@ class Search extends Component {
     render() {
         return (
             <form>
-                <h3>Input keywords, separated by space, and press <code>Enter</code></h3>
-                <input placeholder="Search for..." ref={input => this.search = input} onChange={this.handleInputChange}/>
+                <h3>Input keywords, separated by '-', and press <code>Enter</code></h3>
+                <input type = 'text' placeholder="Search for..." onChange={this.handleInputChange}/>
+                <button className="btn btn-primary" onClick = {this.getData}> Search </button>
                 <p>This is the database query page</p>
                 <p>{this.state.query}</p>
-                <p>Results: {this.state.result}</p>
+                { this.state.result && <DisplaySearchRes data = {this.state.result} />}
             </form>
         );
     }
@@ -74,21 +90,9 @@ class Search extends Component {
 
 
 function Database() {
-    const options = [
-        {name: 'SHMH', value: 'sv', imgpath: 'path1'},
-        {name: 'SDMH', value: 'en', imgpath: 'path2'},
-        {
-            type: 'group',
-            name: 'Group name',
-            items: [
-                {name: 'RMRB', value: 'es'},
-            ]
-        },
-    ];
     return (
         <div className="container">
             <Search />
-            {/* <SelectSearch options = {options} value = "" name = "keywords" placeholder = "Enter keywords.."/> */}
         </div>
     );
 }
