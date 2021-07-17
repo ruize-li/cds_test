@@ -11,20 +11,25 @@ import axios from 'axios';
 
 // data_set =
 function DisplaySearchRes(props) {
-    const data = props.data;
-    const lisItems = Object.keys(data).map((val, i) => {
-        <li key = {i}>
-            <span>data[val]["file_name"]</span>
-            <span>data[val]["keyword"]</span>
-            <span>data[val]["image_path"]</span>
-        </li>
-    })
+    const [items, setItems] = useState(props.data);
+    useEffect(() => {setItems(
+        
+    ), [props.data]})
+    // const data = props.data;
+    // console.log(data);
+    // console.log(Object.keys(data).map((val, i) => data[val]['file_name']));
+    // const listItems = Object.keys(data).map((val, i) => {
+    //     <li key = {data[val]['file_name']}>
+    //         {data[val]['file_name']}
+    //     </li>
+    // })
+    
 
     return (
         <div className="container">
         <h2>Here are the searched results:</h2>
             <ul>
-                {lisItems}
+                {items}
             </ul>
         </div>
     );
@@ -44,6 +49,7 @@ class Search extends Component {
         this.getData = this.getData.bind(this);
     }
 
+    // on click: query the data
     getData(e){
         e.preventDefault();
         let query = this.state.query;
@@ -64,15 +70,9 @@ class Search extends Component {
     };
     // handle input change
     handleInputChange(e) { this.setState({ query : e.target.value})}
-    // handleInputChange = () => {
-    //     this.setState({});
-    // }
+
     
-    // on load
-    componentDidMount(){
-        console.log('mounted!')
-        this.getData();
-    };
+
 
     render() {
         return (
@@ -82,7 +82,7 @@ class Search extends Component {
                 <button className="btn btn-primary" onClick = {this.getData}> Search </button>
                 <p>This is the database query page</p>
                 <p>{this.state.query}</p>
-                { this.state.result && <DisplaySearchRes data = {this.state.result} />}
+                <DisplaySearchRes data = {this.state.result}   />
             </form>
         );
     }
