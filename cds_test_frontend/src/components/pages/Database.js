@@ -11,81 +11,87 @@ import axios from 'axios';
 
 // data_set =
 function DisplaySearchRes(props) {
-    const [items, setItems] = useState(props.data);
-    useEffect(() => {setItems(
-        
-    ), [props.data]})
-    // const data = props.data;
-    // console.log(data);
-    // console.log(Object.keys(data).map((val, i) => data[val]['file_name']));
-    // const listItems = Object.keys(data).map((val, i) => {
-    //     <li key = {data[val]['file_name']}>
-    //         {data[val]['file_name']}
-    //     </li>
-    // })
+    let items = props.data;
+    const [displayRes, setDisplayRes] = useState([]);
+    // let displayRes = [];
     
+    
+
+    // when data changes, re-render the lists
+    useEffect(() => {
+        // get the ids, keywords, fNames
+        let ids = Object.keys(items).map((val) => items[val]['id']);
+        let keywords = Object.keys(items).map((val) => items[val]['keyword']);
+        let fNames = Object.keys(items).map((val) => items[val]['file_name']);
+        let temp = [];
+        for (let i = 0; i < keywords.length; i++) {
+            temp.push(
+            <div key = {ids[i]}>
+                <h5>{fNames[i]}</h5>
+                <p>{keywords[i].slice(0, 150) + "..."}</p>
+            </div>);
+        }
+        console.log('use effect ran')
+        setDisplayRes(temp);
+        // console.log(displayRes);
+     }, [items])
 
     return (
         <div className="container">
-        <h2>Here are the searched results:</h2>
-            <ul>
-                {items}
-            </ul>
+        <h2 key = {items}>Results</h2>
+            
+            { displayRes.length && displayRes }
+            
         </div>
     );
 }
 
 
-class Search extends Component {
-    constructor() {
-        super();
-        this.state = {
-            value : 'Enter Keywords...',
-            query : '',
-            result : {},
-            filteredResult : {}
-        }
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.getData = this.getData.bind(this);
-    }
+
+const Search = () => {
+
+    const [query, setQuery] = useState('');
+    const [result, setResult] = useState('');
 
     // on click: query the data
-    getData(e){
+    //  store them in state
+    let getData = (e) => {
+        // prevent button from refreshing the page
         e.preventDefault();
-        let query = this.state.query;
-        console.log('get data invoked')
-        console.log('in getdata, query is ' + query)
-        fetch('http://localhost:5000/search?keywords=毛主席')  
+        console.log(query.replaceAll(' ', '-'))
+        fetch('http://localhost:5000/search?keywords=' + query.replaceAll(' ', '-')) 
             .then(response => {
                 if (response.ok) {
+                    console.log('response ok');
+                    // console.log(response.json())
                     return response.json();
                   } else {
-                      console.log(response.status);
-                    throw new Error('Something went wrong');
+                    //   console.log(response.status);
+                    throw new Error('fetch failed');
                   }
             })
-            .then(data => this.setState({result : data}))
+            .then(data => {
+                if (data === 'error') throw new Error('invalid keywords');
+                // console.log(data);
+                setResult(data);
+            })
             .catch(err => console.log(err))
         // console.log('filtered res' + this.state.filteredResult);
     };
+
     // handle input change
-    handleInputChange(e) { this.setState({ query : e.target.value})}
+    let handleInputChange = (e) => { setQuery(e.target.value)}
 
-    
-
-
-    render() {
-        return (
-            <form>
-                <h3>Input keywords, separated by '-', and press <code>Enter</code></h3>
-                <input type = 'text' placeholder="Search for..." onChange={this.handleInputChange}/>
-                <button className="btn btn-primary" onClick = {this.getData}> Search </button>
-                <p>This is the database query page</p>
-                <p>{this.state.query}</p>
-                <DisplaySearchRes data = {this.state.result}   />
-            </form>
-        );
-    }
+    return (
+        <form>
+            <h3>Input keywords, separated by ' ', and press <code>Enter</code></h3>
+            <input class="form-control" type = 'text' placeholder="Search for..." onChange={ handleInputChange }/>
+            <button className="btn btn-primary" onClick = { getData }> Search </button>
+            {/* <p>{ query }</p> */}
+            <hr />
+            { result && <DisplaySearchRes data = { result }  />}
+        </form> 
+    );
 }
 
 

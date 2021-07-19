@@ -32,21 +32,27 @@ const data = require('./database/result.json');
 app.get('/search', function(req, res) {
 	let keywords = req.query.keywords;			// keywords is a string seperated by '-'
 	list_keywords = keywords.split('-');
-	let ans = {};
-	// iterate through entries
-	for (let key of Object.keys(data)) {
-		let entry = data[key];
-		// search for key word
-		for (let word of list_keywords) {
-			if (entry["keyword"].indexOf(word) > -1) {
-				// if one key word exists, mark and return the item
-				ans[key] = data[key];
-				break;
+	// if invalid keywords, return error
+	if (Object.keys(keywords).length === 0) {
+		res.send('no keywords')
+	} else {
+		let ans = {};
+		// iterate through entries
+		for (let key of Object.keys(data)) {
+			let entry = data[key];
+			// search for key word
+			for (let word of list_keywords) {
+				if (entry["keyword"].indexOf(word) > -1) {
+					// if one key word exists, mark and return the item
+					ans[key] = data[key];
+					break;
+				}
 			}
 		}
+		console.log('search code ran! keywords are' + keywords);
+		res.json(ans);
 	}
-	console.log('search code ran! keywords are' + keywords);
-	res.json(ans);
+	
 });
 app.get('/get-data', (req, res) => {
         res.json({ msg : "this is the get data feed"})
