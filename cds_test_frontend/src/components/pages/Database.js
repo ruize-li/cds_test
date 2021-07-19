@@ -5,15 +5,14 @@
  * Author: Ruize Li
  */
 import React, { useState, useEffect, Component } from "react";
-import SelectSearch from 'react-select-search';
 import './style.css'
-import axios from 'axios';
 
-// data_set =
+
+// display search results
 function DisplaySearchRes(props) {
     let items = props.data;
     const [displayRes, setDisplayRes] = useState([]);
-    // let displayRes = [];
+    const [resCount, setResCount] = useState(0)
     
     
 
@@ -24,21 +23,28 @@ function DisplaySearchRes(props) {
         let keywords = Object.keys(items).map((val) => items[val]['keyword']);
         let fNames = Object.keys(items).map((val) => items[val]['file_name']);
         let temp = [];
+        
+        // generate items for display
         for (let i = 0; i < keywords.length; i++) {
             temp.push(
-            <div key = {ids[i]}>
-                <h5>{fNames[i]}</h5>
-                <p>{keywords[i].slice(0, 150) + "..."}</p>
+            <div key = {ids[i]} className = "d-flex justify-content-between" style = {{paddingBottom: 1.5 + 'em'}}>
+                <div className = "d-flex justify-content-start">
+                    <h5>{fNames[i]}</h5>
+                </div>
+                <div style = {{paddingRight: 2+ 'em'}}></div>
+                <div className="d-flex align-items-around">{keywords[i].slice(0, 150) + "..."}</div>
+                {/* <div ></div> */}
             </div>);
         }
-        console.log('use effect ran')
+        // update search result counts
+        setResCount(temp.length);
+        // update the searched content for display
         setDisplayRes(temp);
-        // console.log(displayRes);
      }, [items])
 
     return (
         <div className="container">
-        <h2 key = {items}>Results</h2>
+        <h2 key = {items}> {resCount} Results found..</h2>
             
             { displayRes.length && displayRes }
             
@@ -58,7 +64,12 @@ const Search = () => {
     let getData = (e) => {
         // prevent button from refreshing the page
         e.preventDefault();
-        console.log(query.replaceAll(' ', '-'))
+        // if empty query keywords, do not query db
+        if (query === '') {
+            alert('empty keywords!');
+            setResult(null);
+        }
+        // query database with the key words input
         fetch('http://localhost:5000/search?keywords=' + query.replaceAll(' ', '-')) 
             .then(response => {
                 if (response.ok) {
@@ -76,19 +87,21 @@ const Search = () => {
                 setResult(data);
             })
             .catch(err => console.log(err))
-        // console.log('filtered res' + this.state.filteredResult);
     };
 
     // handle input change
     let handleInputChange = (e) => { setQuery(e.target.value)}
 
+
     return (
         <form>
-            <h3>Input keywords, separated by ' ', and press <code>Enter</code></h3>
-            <input class="form-control" type = 'text' placeholder="Search for..." onChange={ handleInputChange }/>
-            <button className="btn btn-primary" onClick = { getData }> Search </button>
-            {/* <p>{ query }</p> */}
-            <hr />
+            <h4>Input keywords, separated by ' ', and press <code>Enter</code></h4>
+            <div className = "d-flex justify-content-between">
+            
+                <input className="form-control" type = 'text' placeholder="Search for..." onChange={ handleInputChange }/>  
+                <button className="btn btn-primary" onClick = { getData } > Search </button>
+
+            </div>
             { result && <DisplaySearchRes data = { result }  />}
         </form> 
     );

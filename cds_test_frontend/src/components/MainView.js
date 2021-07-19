@@ -7,22 +7,28 @@
  import Homepage from "./pages/Homepage";
  import Resources from "./pages/Resources";
  import Database from "./pages/Database";
+ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 class MainView extends React.Component {
 
 
     render() {
         // determine the current page
-        const page = this.props.state.viewPage;
         
         return(
-            <div className="container">
-                {page === 'home' ? <Homepage/> : null}
-                {page === 'about' ? <Homepage/> : null}
-                {page === 'resources' ? <Resources/> : null}
-                {page === 'teachingresearch' ? <Homepage/> : null}
-                {page === 'database' ? <Database/> : null}
-            </div>
+            <Router>
+                <div className="container-lg">
+
+                <Switch>
+                    <Route exact path = '/'>                    <Homepage/>     </Route>
+                    <Route exact path = '/resources'>           <Resources/>    </Route>
+                    <Route exact path = '/teachingresearch'>    <Homepage/>     </Route>
+                    <Route exact path = '/database'>            <Database/>     </Route>
+                </Switch>
+                
+                </div>
+            </Router>
+            
         );
     }
 }

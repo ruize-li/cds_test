@@ -1,6 +1,5 @@
 /**
  * An simple Backend service
- * If received a request, search the databse and return results accordingly
  * Ruize Li @ Colby College East Asian Studies
  * July 14, 2021
  */
@@ -11,9 +10,8 @@ const url = require('url');
 const queryString = require('querystring');
 const PORT = 5000;
 
-const cors = require('cors');
-// app.use(cors);
-// app.use(express.json());        // to support JSON-encoded bodies
+
+
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -21,6 +19,8 @@ app.use(function(req, res, next) {
   });
 
 
+
+// read in database
 const data = require('./database/result.json');
 
 
@@ -54,10 +54,14 @@ app.get('/search', function(req, res) {
 	}
 	
 });
+
+
 app.get('/get-data', (req, res) => {
         res.json({ msg : "this is the get data feed"})
     
 });
 
 
-app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
+
+// init backend service at PORT
+app.listen(PORT, () => console.log(`Colby Digital Studies backend server listening on port ${PORT}!`))
