@@ -12,7 +12,7 @@ import './style.css'
 function DisplaySearchRes(props) {
     let items = props.data;
     const [displayRes, setDisplayRes] = useState([]);
-    const [resCount, setResCount] = useState(0)
+    const [resCount, setResCount] = useState(0);
     
     
 
