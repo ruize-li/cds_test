@@ -19,6 +19,10 @@ const Navbar = () => {
                 <li className="nav-item"><a  className="nav-link" href = '/database'>Database</a></li>
                 <li className="nav-item"><a  className="nav-link" href = '/resources'>Resources</a></li>
                 <li className="nav-item"><a  className="nav-link" href = '/about'>About</a></li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="/admin">Admin</a>
+                    </li>
+                    
                 <li className="nav-item"><div id="google_translate_element" /></li>
             </ul>
             </header>

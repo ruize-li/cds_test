@@ -8,6 +8,7 @@ const express = require('express');
 const app = express();
 const url = require('url');
 const queryString = require('querystring');
+const LOGIN_PASSWORD = 'lrc';
 const PORT = 5000;
 
 
@@ -56,10 +57,19 @@ app.get('/search', function(req, res) {
 });
 
 
-app.get('/get-data', (req, res) => {
-        res.json({ msg : "this is the get data feed"})
-    
-});
+app.get('/adminlogin', (req, res) => {
+		console.log('received admin login request!');
+        let userInput = req.query.userInput;
+		// console.log('userInput is ' + userInput);
+		let check = userInput === LOGIN_PASSWORD ? true : false;
+		if (!check) {
+			res.send({verification : false});
+		}
+		res.send({verification : true});
+
+	
+	}
+);
 
 
 
