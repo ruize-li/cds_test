@@ -5,12 +5,14 @@
  * Author: Ruize Li
  */
 import React, { useState, useEffect, Component } from "react";
+import Highlighter from "react-highlight-words";
 import './style.css'
 
 
 // display search results
 function DisplaySearchRes(props) {
     let items = props.data;
+    let query = props.query;
     const [displayRes, setDisplayRes] = useState([]);
     const [resCount, setResCount] = useState(0);
     
@@ -23,6 +25,8 @@ function DisplaySearchRes(props) {
         let keywords = Object.keys(items).map((val) => items[val]['keyword']);
         let fNames = Object.keys(items).map((val) => items[val]['file_name']);
         let temp = [];
+
+        console.log(query);
         
         // generate items for display
         for (let i = 0; i < keywords.length; i++) {
@@ -32,10 +36,16 @@ function DisplaySearchRes(props) {
                     <h5>{fNames[i]}</h5>
                 </div>
                 <div style = {{paddingRight: 2+ 'em'}}></div>
-                <div className="d-flex align-items-around">{keywords[i].slice(0, 150) + "..."}</div>
-                {/* <div ></div> */}
+                    <div className="d-flex align-items-around">{<Highlighter
+                        highlightClassName="YourHighlightClass"
+                        searchWords={ query.split(' ') }
+                        autoEscape={true}
+                        textToHighlight= { keywords[i].slice(0, 150) }
+                    />}</div>
             </div>);
         }
+            
+    
         // update search result counts
         setResCount(temp.length);
         // update the searched content for display
@@ -47,7 +57,7 @@ function DisplaySearchRes(props) {
         <h2 key = {items}> {resCount} Results found..</h2>
             
             { displayRes.length && displayRes }
-            
+        
         </div>
     );
 }
@@ -102,7 +112,7 @@ const Search = () => {
                 <button className="btn btn-primary" onClick = { getData } > Search </button>
 
             </div>
-            { result && <DisplaySearchRes data = { result }  />}
+            { result && <DisplaySearchRes data = { result } query = {query}  />}
         </form> 
     );
 }

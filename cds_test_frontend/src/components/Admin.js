@@ -1,41 +1,161 @@
 /**
  * Admin page for managing database
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const password = 'lrcadmin';
+const Item = (props) => {
+    const entry = props.data;
+    const curItem = props.curItem;
+    const setCurItem = props.setCurItem;
+    
+    const [itemName, setItemName] = useState(entry.file_name);
+    const [itemKeyword, setItemKeyword] = useState(entry.keyword);
+    const [itemImgPath, setItemImagePath] = useState(entry.image_path);
 
-const SearchBar = () => {
+    const handleItemNameChange = (e) => {
+        setItemName(e.target.value);
+    } 
+
+    const handleItemKeywordChange = (e) => {
+        setItemKeyword(e.target.value);
+    }
+    const handleItemImgpathChange = (e) => {
+        setItemImagePath(e.target.value);
+    }
+
+    // save changes, check valid input,
+    // send POST request to the server
+    const handleSaveChange = (e) => {
+
+        console.log({
+            file_name : itemName,
+            keyword : itemKeyword,
+            image_path : itemImgPath
+        })
+        let data = {
+            file_name : itemName,
+            keyword : itemKeyword,
+            image_path : itemImgPath
+        };
+        e.preventDefault();
+        fetch('http://localhost:5000/securedAdminAccess', {
+            method : 'POST',
+            body : JSON.stringify(data)
+        })
+        .then(res => {
+            if (res.ok) {
+                console.log(res);
+            }
+        })
+
+    }
+
+    const handleNext = (e) => {
+        e.preventDefault();
+        setCurItem({idx : curItem.idx + 1});
+    }
+
+    const handlePrev = (e) => {
+        e.preventDefault();
+        if (curItem.idx === 0) {
+            alert('already the first item');
+        } else {
+            setCurItem({idx : curItem.idx - 1});
+        }
+        
+    }
+
     return (
-        <div className="input-group">
-            <div className="form-outline">
-                <input type="search" id="form1" className="form-control" />
-                <label className="form-label" >Search</label>
+        <div className="container">
+            <h5>Current Item</h5>
+            <h6>Name : { entry.file_name}</h6>
+        <br />
+            <h6>Description : { entry.keyword }</h6>
+
+            <br />
+            <h6>Image path: { entry.image_path}</h6>
+
+            <div className="col">
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text" id="basic-addon1">Entry Name</span>
+                    </div>
+                    
+                        <input type="text" className="form-control" placeholder={itemName} aria-label="itemName" aria-describedby="basic-addon1" onChange={handleItemNameChange} />
+                    
+                </div>
+                <br />
+                <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text" id="basic-addon1">Entry Keyword</span>
+                </div>
+                
+                    {/* <input type="text" className="form-control" placeholder={itemKeyword} aria-label="itemKeyword" aria-describedby="basic-addon1" onChange={handleItemNameChange} /> */}
+                    <textarea className="form-control" aria-label="With textarea" placeholder = {itemKeyword}
+                    onChange = {handleItemKeywordChange}></textarea>
+                </div>
+
+                <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text" id="basic-addon1">Entry Image Path</span>
+                </div>
+                
+                    <input type="text" className="form-control" placeholder={itemImgPath} aria-label="itemImgpath" aria-describedby="basic-addon1" onChange={handleItemImgpathChange} />
+                    {/* <textarea class="form-control" aria-label="With textarea" placeholder = {itemKeyword}></textarea> */}
+                </div>
             </div>
-            <button type="button" className="btn btn-primary">
-                Select
-            </button>
+
+            <button type="button" class="btn btn-outline-primary" onClick = {handleNext}>Next</button>
+            <button type="button" class="btn btn-outline-primary" onClick = {handlePrev}>Previous</button>
+            <button type="button" class="btn btn-primary btn-lg" onClick = {handleSaveChange}>Save Changes</button>
         </div>
+     
     )
+
 }
 
+
+
+
 const Nav = () => {
+    const [db, setDb] = useState(null);
+    const [curItem, setCurItem] = useState({idx : 0});
 
     // on click, save the settings for current panel
-    let handleSaveBtnClick = (e) => {
+    let handleFetchData = (e) => {
+        // console.log()
         e.preventDefault();
+
+        fetch('http://localhost:5000/get-data')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                console.log(Object.keys(data));
+                // database = data;
+                setDb(data);
+                // setCurItem(1);
+            }).catch(err => console.log(err))
 
     }
 
     return (
-        <nav className="navbar navbar-light">
+        <div className="container">
+            <nav className="navbar navbar-light">
             <form >
+                <button className="btn btn-outline-success" type="button" onClick = { handleFetchData }>Fetch Database</button>
 
-                <button className="btn btn-outline-success" type="button" onClick = { handleSaveBtnClick }>Edit Database</button>
-                {/* <button className="btn btn-outline-secondary" type="button" onClick = { handleAddNewBtnClick }>Add New Entry</button> */}
-                
             </form>
         </nav>
+
+        {db && <Item data = {db[Object.keys(db)[curItem.idx]]}
+                    curItem = {curItem}
+                    setCurItem = {setCurItem}
+                    />}
+        </div>
+        
 
         
     );
@@ -51,8 +171,6 @@ const Backend = () => {
             </h4>
 
             <Nav/>
-
-            <SearchBar/>
 
             </div>
         </div>
