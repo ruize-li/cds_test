@@ -1,5 +1,7 @@
 
 # cds_test
+# SEE building_database branch to view current progress.
+
 
 A testing site for using Reactjs to build web app for Colby Digital Studies
 
