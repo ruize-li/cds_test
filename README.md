@@ -27,7 +27,7 @@ Express js, Node js
 
 ## Instructions for development and testing
 
-You will first need install `node js`. Go to nodejs.org for downloads and instructions.
+You will first need install `node js`. Go to [nodejs.org](nodejs.org) for downloads and instructions.
 
 You need to start both backend server and front end application to start testing and developing.
 
